@@ -146,6 +146,8 @@ def main():
                              display_name='Routes')
     application_commands = dict(recent_logs=('get_recent_logs', 'Recent Logs',),
                                 env=('get_env', 'Get the environment of an application',),
+                                get_bits=('get_bits', 'Get the bits of an application',),
+                                put_bits=('put_bits', 'Put the bits of an application',),
                                 instances=('get_instances', 'Get the instances of an application',),
                                 stats=('get_stats', 'Get the stats of an application',),
                                 summary=('get_summary', 'Get the summary of an application',),
@@ -197,6 +199,9 @@ def main():
                 command_parser = subparsers.add_parser(command)
                 command_parser.add_argument('id', metavar='ids', type=str, nargs=1,
                                             help='The id. Can be UUID or name (first found then)')
+                if command == 'put_bits':
+                    command_parser.add_argument('path', metavar='path', type=str, nargs=1,
+                                                help='Path to zip file containing the bits')
             for command, application_command_description in list(application_extra_list_commands.items()):
                 command_parser = subparsers.add_parser(command)
                 command_parser.add_argument('id', metavar='ids', type=str, nargs=1,
@@ -207,6 +212,15 @@ def main():
     if arguments.action == 'recent_logs':
         resource_id = resolve_id(arguments.id[0], lambda x: client.apps.get_first(name=x), 'application', True)
         log_recent(client, resource_id)
+    elif arguments.action == 'get_bits':
+        resource_id = resolve_id(arguments.id[0], lambda x: client.apps.get_first(name=x), 'application', True)
+        response = getattr(client.apps, application_commands[arguments.action][0])(resource_id)
+        for chunk in response.iter_content():
+            sys.stdout.write(chunk)
+    elif arguments.action == 'put_bits':
+        resource_id = resolve_id(arguments.id[0], lambda x: client.apps.get_first(name=x), 'application', True)
+        fp = open(arguments.path[0], 'rb')
+        print(getattr(client.apps, application_commands[arguments.action][0])(resource_id, fp).json(indent=1))
     elif application_commands.get(arguments.action) is not None:
         resource_id = resolve_id(arguments.id[0], lambda x: client.apps.get_first(name=x), 'application', True)
         print(getattr(client.apps, application_commands[arguments.action][0])(resource_id).json(indent=1))

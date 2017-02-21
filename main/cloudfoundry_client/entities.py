@@ -64,12 +64,21 @@ class EntityManager(object):
         self.client = client
         self.entity_builder = entity_builder if entity_builder is not None else lambda pairs: Entity(target_endpoint,
                                                                                                      client, pairs)
-
-    def _get(self, requested_path, entity_builder=None):
+    def _get_raw(self, requested_path):
         url = '%s%s' % (self.target_endpoint, requested_path)
         response = EntityManager._check_response(self.client.get(url))
-        _logger.debug('GET - %s - %s', requested_path, response.text)
-        return self._read_response(response, entity_builder)
+        return response
+
+    def _put_multipart(self, requested_path, files, data):
+        url = '%s%s' % (self.target_endpoint, requested_path)
+        response = EntityManager._check_response(self.client.put(url, files=files, data=data))
+        _logger.debug('PUT - %s - %s', url, response.text)
+        return self._read_response(response, JsonObject)
+
+    def _get(self, requested_path, entity_builder=None):
+        raw_response = self._get_raw(requested_path)
+        _logger.debug('GET - %s - %s', requested_path, raw_response.text)
+        return self._read_response(raw_response, entity_builder)
 
     def _list(self, requested_path, entity_builder=None, **kwargs):
         url_requested = EntityManager._get_url_filtered('%s%s' % (self.target_endpoint, requested_path), **kwargs)

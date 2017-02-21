@@ -39,6 +39,14 @@ class AppManager(EntityManager):
     def get_env(self, application_guid):
         return self._get('%s/%s/env' % (self.entity_uri, application_guid), JsonObject)
 
+    def get_bits(self, application_guid):
+        return self._get_raw('%s/%s/download' % (self.entity_uri, application_guid))
+
+    def put_bits(self, application_guid, fp):
+        return self._put_multipart('%s/%s/bits' % (self.entity_uri, application_guid),
+                                   files={'application': ('application.zip', fp, 'application/zip', {'Content-Transfer-Encoding': 'binary'})},
+                                   data={'resources': '[]'})
+
     def get_summary(self, application_guid):
         return self._get('%s/%s/summary' % (self.entity_uri, application_guid), JsonObject)
 
