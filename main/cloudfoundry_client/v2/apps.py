@@ -75,6 +75,14 @@ class AppManager(EntityManager):
             self._wait_for_instances_in_state(application_guid, 0, 'STOPPED', check_time, timeout)
             return result
 
+    def restage(self, application_guid, check_time=0.5, timeout=500):
+        url = '%s%s/%s/restage' % (self.target_endpoint, self.entity_uri, application_guid)
+        response = EntityManager._check_response(self.client.post(url))
+        _logger.debug('POST - %s - %s', url, response.text)
+        result = self._read_response(response)
+        self._wait_for_instances_in_state(application_guid, 0, 'RUNNING', check_time, timeout)
+        return result
+
     def _wait_for_instances_in_state(self, application_guid, number_required, state_expected, check_time, timeout):
         all_in_expected_state = False
         sum_waiting = 0

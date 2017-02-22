@@ -154,6 +154,7 @@ def main():
                                 instances=('get_instances', 'Get the instances of an application',),
                                 stats=('get_stats', 'Get the stats of an application',),
                                 summary=('get_summary', 'Get the summary of an application',),
+                                restage=('restage', 'Restage an application',),
                                 start=('start', 'Start an application',),
                                 stop=('stop', 'Stop an application',))
     application_extra_list_commands = dict(routes=('list_routes', 'List the routes(host) of an application', 'host'))
