@@ -12,6 +12,7 @@ from cloudfoundry_client.v2.service_brokers import ServiceBrokerManager
 from cloudfoundry_client.v2.service_instances import ServiceInstanceManager
 from cloudfoundry_client.v2.service_keys import ServiceKeyManager
 from cloudfoundry_client.v2.service_plans import ServicePlanManager
+from cloudfoundry_client.v2.stacks import StackManager
 
 _logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class CloudFoundryClient(CredentialManager):
         self.service_brokers = ServiceBrokerManager(target_endpoint, self)
         self.apps = AppManager(target_endpoint, self)
         self.buildpacks = BuildpackManager(target_endpoint, self)
+        self.stacks = StackManager(target_endpoint, self)
         # Default implementations
         self.organizations = EntityManager(target_endpoint, self, '/v2/organizations')
         self.spaces = EntityManager(target_endpoint, self, '/v2/spaces')

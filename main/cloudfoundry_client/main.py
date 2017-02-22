@@ -144,6 +144,9 @@ def main():
     commands['route'] = dict(list=(), name='host',
                              allow_retrieve_by_name=False, allow_creation=False, allow_deletion=False,
                              display_name='Routes')
+    commands['stack'] = dict(list=(), name='name',
+                             allow_retrieve_by_name=True, allow_creation=False, allow_deletion=False,
+                             display_name='Stacks')
     application_commands = dict(recent_logs=('get_recent_logs', 'Recent Logs',),
                                 env=('get_env', 'Get the environment of an application',),
                                 get_bits=('get_bits', 'Get the bits of an application',),
