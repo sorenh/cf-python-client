@@ -62,6 +62,16 @@ class TestApps(unittest.TestCase, AbstractTestCase):
                                                                   'application/zip',
                                                                   {'Content-Transfer-Encoding': 'binary'})})
 
+    def test_restage(self):
+        self.client.post.return_value = mock_response(
+            '/v2/apps/app_id/restage',
+            OK,
+            None,
+            'v2', 'apps', 'POST_{id}_restage_response.json')
+        application = self.client.apps.restage('app_id')
+        self.client.post.assert_called_with(self.client.post.return_value.url)
+        self.assertIsNotNone(application)
+
     def test_get_env(self):
         self.client.get.return_value = mock_response(
             '/v2/apps/app_id/env',
