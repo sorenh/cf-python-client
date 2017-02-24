@@ -1,5 +1,6 @@
 import sys
 import unittest
+from StringIO import StringIO
 
 import cloudfoundry_client.main as main
 from abstract_test_case import AbstractTestCase
@@ -36,6 +37,30 @@ class TestApps(unittest.TestCase, AbstractTestCase):
         application = self.client.apps.get_first(space_guid='space_guid', name='application_name')
         self.client.get.assert_called_with(self.client.get.return_value.url)
         self.assertIsNotNone(application)
+
+    def test_get_bits(self):
+        self.client.get.return_value = mock_response(
+            '/v2/apps/app_id/download',
+            OK,
+            None,
+            'v2', 'apps', 'GET_{id}_download_response.bin')
+        bits = self.client.apps.get_bits('app_id')
+        self.client.get.assert_called_with(self.client.get.return_value.url)
+
+    def test_put_bits(self):
+        self.client.put.return_value = mock_response(
+            '/v2/apps/app_id/bits',
+            CREATED,
+            None,
+            'v2', 'apps', 'PUT_{id}_bits_response.json')
+        fp = StringIO('appbitsasazipfile')
+        bits = self.client.apps.put_bits('app_id', fp)
+        self.client.put.assert_called_with(self.client.put.return_value.url,
+                                           data={'resources': '[]'},
+                                           files={'application': ('application.zip',
+                                                                  fp,
+                                                                  'application/zip',
+                                                                  {'Content-Transfer-Encoding': 'binary'})})
 
     def test_get_env(self):
         self.client.get.return_value = mock_response(
