@@ -1,0 +1,12 @@
+{
+   "metadata": {
+      "guid": "86205f38-84fc-4bc2-b2b8-af7f55669f04",
+      "url": "/v2/stacks/86205f38-84fc-4bc2-b2b8-af7f55669f04",
+      "created_at": "2015-03-04T18:58:42Z",
+      "updated_at": null
+   },
+   "entity": {
+      "name": "cflinuxfs2",
+      "description": "Cloud Foundry Linux-based filesystem"
+   }
+}
